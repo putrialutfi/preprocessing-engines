@@ -186,10 +186,13 @@ def date_standardizer(date_token):
   else:
     date_eng_format = date_token[0]
 
-  tzinfos = {"ICT": gettz("Asia/Jakarta")}
-  final_date = parser.parse(date_eng_format, 
-                            tzinfos=tzinfos, 
-                            dayfirst=True).strftime("%d/%m/%Y")
+  try:
+    tzinfos = {"ICT": gettz("Asia/Jakarta")}
+    final_date = parser.parse(date_eng_format, 
+                              tzinfos=tzinfos, 
+                              dayfirst=True).strftime("%d/%m/%Y")
+  except ValueError:
+    final_date = "Format yang dimasukkan salah."
 
   return final_date
 
