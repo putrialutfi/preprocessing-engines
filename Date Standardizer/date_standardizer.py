@@ -1,6 +1,7 @@
 import difflib
 from dateutil import parser
 from dateutil.tz import gettz
+import sys
 
 date_format = "%d/%m/%Y" #adjustable
 
@@ -129,15 +130,21 @@ def month_corrector(mo_token):
 
 def str_to_num(strnum):
   res, temp, temp2 = 0, 0, 0
+  error_message = ''
 
   strdate = strnum.split()
   dlist = [i for i in range(len(strdate))]
   for idx, d in enumerate(strdate):
-    for key, val in nums.items():
-      if d == key and val.get('type') == 'sym':
-        temp = nums.get(d).get('num') * nums.get(strdate[idx-1]).get('num') if val.get('op') == 'multiple' else nums.get(d).get('num') + nums.get(strdate[idx-1]).get('num')
-        res = res + temp
-        dlist = [x for x in dlist if (x not in [idx, idx-1])]
+    if d not in nums:
+      error_message = 'Whoops! looks like any typo. Please recheck.'
+      print(error_message)
+      sys.exit()
+    else:
+      for key, val in nums.items():
+        if d == key and val.get('type') == 'sym':
+          temp = nums.get(d).get('num') * nums.get(strdate[idx-1]).get('num') if val.get('op') == 'multiple' else nums.get(d).get('num') + nums.get(strdate[idx-1]).get('num')
+          res = res + temp
+          dlist = [x for x in dlist if (x not in [idx, idx-1])]
   for rest in dlist:
     temp2 = nums.get(strdate[rest]).get('num')
     res = res + temp2
